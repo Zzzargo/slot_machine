@@ -17,8 +17,7 @@ void displayMatrix(int **mat, int rows, int columns) {
 void spin_col(int **mat, int rows, int columns, int column_to_spin, int times) {
     if (column_to_spin >= columns) {
         printf("Invalid input for column to spin");
-    }
-    else {
+    } else {
         for (int i = times; i > 0; i--) {
             int aux = mat[rows - 1][column_to_spin];
             for (int j = rows - 1; j > 0; j--) {
@@ -32,14 +31,7 @@ void spin_col(int **mat, int rows, int columns, int column_to_spin, int times) {
 
 // Calculate the number of winning lines and the score
 void win(int **mat, int rows, int columns, int* winCount, int* score) {
-
-    if (rows < 3) {
-        printf("Not enough rows.");
-        return;
-    }
-
-
-    bool distinctValues[10] = {false};
+    bool *distinctValues = calloc(10, sizeof(bool));
     int distinctValuesCount = 0;
 
     for (int i = 0; i < 3; i++) {
@@ -50,7 +42,6 @@ void win(int **mat, int rows, int columns, int* winCount, int* score) {
         int streakLengthMax = 1;
 
         for (int j = 0; j < columns; j++) {
-
             // Checking for row sequences
             if (mat[i][j] == currentValue) {
                 streakLengthCurrent++;
@@ -96,7 +87,7 @@ void win(int **mat, int rows, int columns, int* winCount, int* score) {
 
                 // A single diagonal was found
                 if (firstDiagonalFound || secondDiagonalFound) {
-                    if ( firstDiagonalFound && firstDiagonalValue == 7) {
+                    if (firstDiagonalFound && firstDiagonalValue == 7) {
                         (*winCount)++;
                         (*score) += 7*2;
                         continue;
@@ -136,18 +127,21 @@ void win(int **mat, int rows, int columns, int* winCount, int* score) {
             (*score) += 15;
         }
     }
+    free(distinctValues);
 }
 
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
 
 int main(void) {
-
     unsigned char task = 0;
     int rows = 0, columns = 0, i = 0, j = 0;
     scanf("%c", &task);
     scanf("%d %d", &rows, &columns);
 
 
-    // ALLOCATION
+    // Allocation of the matrix
     int **matrix = malloc(sizeof(int*) * rows);
 
     for (i = 0; i < rows; i++) {
@@ -160,8 +154,7 @@ int main(void) {
         }
     }
 
-    switch(task) {
-
+    switch (task) {
         // Task 1
         case '1': {
             int column_to_spin = 0, spins = 0;
@@ -170,7 +163,7 @@ int main(void) {
             displayMatrix(matrix, rows, columns);
             break;
         }
-        
+
         // Task 2
         case '2': {
             int winningSequences = 0;
@@ -231,13 +224,9 @@ int main(void) {
         case '5': {
             int maxScore = 0;
             for (int indexColumn1 = 0; indexColumn1 < columns; indexColumn1++) {
-
                 for (int indexColumn2 = 0; indexColumn2 < columns; indexColumn2++) {
-
-                    for (int timesToSpinColumn1 = 0; timesToSpinColumn1 <= rows; timesToSpinColumn1++) {
-
-                        for (int timesToSpinColumn2 = 0; timesToSpinColumn2 <= rows; timesToSpinColumn2++) {
-
+                    for (int timesToSpinColumn1 = 0; timesToSpinColumn1 < rows; timesToSpinColumn1++) {
+                        for (int timesToSpinColumn2 = 0; timesToSpinColumn2 < rows; timesToSpinColumn2++) {
                             int winningSequences = 0;
                             int testScore = 0;
                             spin_col(matrix, rows, columns, indexColumn1, timesToSpinColumn1);
@@ -257,8 +246,55 @@ int main(void) {
 
         // Task 6
         case '6': {
-            //;
+            // The values of the following matrix represent the cost of the minimum cost path
+            // from the upper-left corner to the value
+            int **costMatrix = malloc(sizeof(int *) * 3);
+            for (i = 0; i < 3; i++) {
+                costMatrix[i] = calloc(columns, sizeof(int));
+            }
+
+            for (i = 0; i < 3; i++) {
+                for (j = 0; j < columns; j++) {
+                    costMatrix[i][j] = __INT_MAX__;  // To get the minimum cost path for each cell
+                }
+            }
+
+            costMatrix[0][0] = 0;
+            // The matrix is being processed by columns, not by rows, so first i will be incremented, then j
+            for (j = 0; j < columns; j++) {
+                for (i = 0; i < 3; i++) {
+                    // Calculating minimum cost paths to each neighbour
+                    if (i > 0) {  // Above
+                        int absDiff = abs(matrix[i-1][j] - matrix[0][0]);
+                        costMatrix[i-1][j] = min(costMatrix[i-1][j], costMatrix[i][j] + absDiff);
+                    }
+                    if (i < 2) {  // Below
+                        int absDiff = abs(matrix[i+1][j] - matrix[0][0]);
+                        costMatrix[i+1][j] = min(costMatrix[i+1][j], costMatrix[i][j] + absDiff);
+                    }
+                    if (j > 0) {  // Left
+                        int absDiff = abs(matrix[i][j-1] - matrix[0][0]);
+                        costMatrix[i][j-1] = min(costMatrix[i][j-1], costMatrix[i][j] + absDiff);
+                    }
+                    if (j < columns-1) {  // Right
+                        int absDiff = abs(matrix[i][j+1] - matrix[0][0]);
+                        costMatrix[i][j+1] = min(costMatrix[i][j+1], costMatrix[i][j] + absDiff);
+                    }
+                }
+            }
+
+            printf("%d\n", costMatrix[2][columns-1]);
+            // Free cost matrix
+            for (i = 0; i < 3; i++) {
+                free(costMatrix[i]);
+            }
+            free(costMatrix);
             break;
         }
     }
+    // Freeing memory
+    for (i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
 }
