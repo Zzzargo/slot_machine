@@ -32,6 +32,9 @@ void spin_col(int **mat, int rows, int columns, int column_to_spin, int times) {
 // Calculate the number of winning lines and the score
 void win(int **mat, int rows, int columns, int* winCount, int* score) {
     bool *distinctValues = calloc(10, sizeof(bool));
+    if (!distinctValues) {
+        return;
+    }
     int distinctValuesCount = 0;
 
     for (int i = 0; i < 3; i++) {
@@ -143,9 +146,17 @@ int main(void) {
 
     // Allocation of the matrix
     int **matrix = malloc(sizeof(int*) * rows);
+    if (!matrix) {
+        printf("Matrix was not allocated correctly");
+        return 1;
+    }
 
     for (i = 0; i < rows; i++) {
         matrix[i] = calloc(columns, sizeof(int));
+        if (!matrix[i]) {
+            printf("Row %d was not allocated correctly", i);
+            return 1;
+        }
     }
     // READING
     for (i = 0; i < rows; i++) {
@@ -249,8 +260,16 @@ int main(void) {
             // The values of the following matrix represent the cost of the minimum cost path
             // from the upper-left corner to the value
             int **costMatrix = malloc(sizeof(int *) * 3);
+            if (!costMatrix) {
+                printf("Matrix was not allocated correctly");
+                return 1;
+            }
             for (i = 0; i < 3; i++) {
                 costMatrix[i] = calloc(columns, sizeof(int));
+                if (!costMatrix[i]) {
+                    printf("Row %d was not allocated correctly", i);
+                    return 1;
+                }
             }
 
             for (i = 0; i < 3; i++) {
