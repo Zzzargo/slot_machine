@@ -5,19 +5,19 @@
 Burlacu Vasile - CTI-311CD
 ---
 
-# :book: Homework 1
+# :book: Slot machine
 
 ## :scroll: Overview
-For this homework I created a slot machine simulator, that has useful functionality. This program uses dynamic programming to create a matrix which simulates the functionality of a slot machine. The "visible screen of the machine" is represented by the first 3 rows of the matrix.
+This is a slot machine simulator, that has useful functionality. This program uses dynamic programming to create a matrix which simulates the functionality of a slot machine. The "visible screen of the machine" is represented by the first 3 rows of the matrix.
 
 
 ## :gear: Functionality
-- Spin a chosen column a desired number of times *task 1*
-- Check if a given matrix configuration has winning combinations and calculate the total score of the configuration *task 2*
-- Calculate the total score after a number of spins *task 3*
-- Calculate what could be the highest score if one symbol of the matrix could be changed to an arbitrary value *task 4*
-- Calculate what could be the highest score if 2 columns of the matrix could pe spun an arbitrary number of times *task 5*
-- A bonus game *task 6*
+- Spin a chosen column a desired number of times
+- Check if a given matrix configuration has winning combinations and calculate the total score of the configuration
+- Calculate the total score after a number of spins
+- Calculate what could be the highest score if one symbol of the matrix could be changed to an arbitrary value
+- Calculate what could be the highest score if 2 columns of the matrix could pe spun an arbitrary number of times
+- A bonus game
 
 ### :trophy: Winning combinations
 - There are 3 types of winning combinations:
